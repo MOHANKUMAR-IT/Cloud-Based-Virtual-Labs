@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                background-image: url("goodBye.jfif");
+                background-size:cover ;
+                background-repeat: no-repeat;
+            }
+            p{
+                margin-top: 300px;
+                font-size: 50px;
+                color: aliceblue;
+                margin-left: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Your image saved successfully,<br>Continue your work wherever you left.<br>See you sooon!!!</p>
+        
+    </body>
+    <script>
+        let searchParams = new URLSearchParams(window.location.search);
+        let name = searchParams.get('name');
+        var a = setTimeout(fun, 2000);  
+        function fun() {  
+         window.location="index.html?name="+name;
+        }
+    </script>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    </head>
+    <body onload="load()">
+      <p id="message"></p>
+    </body>
+    <script>
+        function load(){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                
+                var json = JSON.parse(this.responseText);
+                var html ="";
+                for(var x in json){
+                    if(x != 'memory')
+                    html+=x+" "+json[x]+" <br>";
+                    else{
+                        for(var y in json[x]){
+                            html+=y+" "+json[x][y]+" <br>";
+                        }
+                    }
+                }
+                document.getElementById("message").innerHTML=html;
+            }
+            };
+            xmlhttp.open("GET", "\\ITOM\\AJAX\\getStats.php", true);
+            xmlhttp.send();
+        }
+    </script>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <style>
+            .loginForm{
+                width: 360px;
+                padding: 8% 0 0;
+                margin: auto;
+                
+            }
+            input.form-control{
+                border-color: dodgerblue;
+                border-width: 2px;
+                margin: 2px;
+            }
+            body{
+                margin: 0;
+                padding: 0;
+            }
+            .loginButton{
+                
+                text-transform: uppercase;
+                outline: 0;
+                background: dodgerblue;
+                width: 100%;
+                border: 0;
+                border-radius: 5px;
+                padding: 15px;
+                color: #FFFFFF;
+                font-size: 14px;
+                -webkit-transition: all 0.3 ease;
+                transition: all 0.3 ease;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <center>
+        <div class="loginForm">
+            <img src="man-pc.png" height="350px" width="370px">
+            <input type="text" class="form-control" id="user" placeholder="User Name" aria-label="User Name">
+          <input type="password" class="form-control" id="pwd" placeholder="Password" aria-label="Password">
+          <input type="text" class="form-control" id="pno" placeholder="Phone Numner" aria-label="Phone Number">
+          <p id="error" style="display: none;">Account Exists Try to login</p>
+          <br>
+          <button class="loginButton" onclick="login()">Login</button>
+        </div>
+        <a href="login.html">Login here</a>
+    </center>
+    </body>
+    <script>
+        function login(){
+            var user = $("#user").val();
+            var pwd = $("#pwd").val();
+            var pno = $("#pno").val();
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var yesno = this.responseText;
+                    if(yesno){
+                        window.location = "index.html?usr="+user;
+                    }
+                    else{
+                        document.getElementsById("error").style.display = 'inherit';
+                    }
+                }
+                };
+                xmlhttp.open("GET", "\\ITOM\\AJAX\\registerUser.php?usr="+user+"&pwd="+pwd+"&pno="+pno, true);
+                xmlhttp.send();
+        }
+    </script>
+</html>
