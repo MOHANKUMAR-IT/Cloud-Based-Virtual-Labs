@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <style>
+            body{
+                overflow: hidden;
+                background-color: rgb(255, 255, 255);
+            }
+            button {
+                margin-top: 5px;
+                line-height: 50px;
+                min-width: 150px;
+                text-align: center;
+                font-family: Arial, sans-serif;
+                background-color: #FD310F;
+                border-radius: 5px;
+                color: #fff;
+                border: 0;
+                cursor: pointer;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+                transition: background-color 0.3s ease-in-out;
+                }
+
+                button:hover {
+                background-color: #FE712A;
+                }
+            iframe{
+                width: 90%;
+                min-height: 600px;
+                height: auto;
+                overflow: auto;
+                margin-top: 10px;
+                
+            }   
+            ul{
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: #333;
+            }
+            li {
+                float: left;
+                display: block;
+                text-align: center;
+                padding: 14px 8px;
+                text-decoration: none;
+            }
+            #shell{
+                overflow: hidden;
+            }
+            p{
+                color: floralwhite;
+                font-size: xx-large;
+                margin: 5px;
+            }
+            select{
+                margin: 5px;
+                padding: 15px;
+                line-height: 50px;
+                min-width: 150px;
+                text-align: center;
+                font-family: Arial, sans-serif;
+                background-color: #FD310F;
+                border-radius: 5px;
+                color: #fff;
+                border: 0;
+                cursor: pointer;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+                transition: background-color 0.3s ease-in-out;
+            }
+            options{
+                padding: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <ul class="nav">
+            <li><button onclick="stop()">Commit & Exit</button></li>
+            <li><button onclick="refresh()">Refresh shell</button></li>
+            <li><p>Image:</p></li>
+            <li><p id="name"></p></li>
+            <li><p>SFTP Port:</p></li>
+            <li><p id="sftp"></p></li>
+            <li><button onclick="fileSystem()">File Manager</button></li>
+            <li>
+                <p>Background:</p></li><li>
+                <select onclick="change()" id="color">
+                <option value="white">Bright</option>
+                <option value="black">Dark</option>
+                <option value="blue">Blue</option>
+                <option value="red">Red</option>
+              </select>
+            </li>
+            
+        </ul>
+
+        <center>
+        <div id="shell">
+            <img src="loading.gif">
+        </div>
+        </center>
+    </body>
+    <script>
+        function fileSystem(){
+
+            window.open("//"+window.location.hostname+":8334/login", '_blank');
+            }
+        function change(){
+            document.body.style.backgroundColor = $("#color").val();
+        }
+        let searchParams = new URLSearchParams(window.location.search);
+        let port=0;
+        let name = "";
+        if(searchParams.has('port'))
+        port = searchParams.get('port');
+
+        else
+            document.location = "index.html";
+        if(searchParams.has('name'))
+        name = searchParams.get('name');
+        else 
+            document.location = "index.html";
+        let sftport = searchParams.get("sftport");
+        let pwd = searchParams.get('pwd');
+        document.getElementById("name").innerHTML = name;
+        document.getElementById("sftp").innerHTML = sftport;
+        var url = "http://"+location.hostname+":"+port+"/";
+        document.getElementById("shell").innerHTML="<iframe id='shellFrame' src="+url+" title='UBUNTU SHELL'></iframe>";
+        refresh();refresh();
+        function refresh(){
+            var iframe = document.getElementById('shellFrame');
+            iframe.src = iframe.src;
+        }
+        function stop(){
+            var xmlhttp = new XMLHttpRequest();
+            // document.getElementById("shell").innerHTML="<img src='loading.gif'>";
+            document.body.style.backgroundImage="url('loading.gif')";
+            document.body.style.backgroundRepeat="no-repeat";
+            document.body.style.backgroundColor="black";
+            document.body.style.backgroundSize="cover";
+            document.body.innerHTML="";
+            xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var url = this.responseText;
+                window.location="comeAgain.html?name="+name+"&pwd="+pwd;
+            }
+            };
+            xmlhttp.open("GET", "\\ITOM\\AJAX\\stopContainer.php?name="+name, true);
+            xmlhttp.send();
+        }
+    </script>
+</html>

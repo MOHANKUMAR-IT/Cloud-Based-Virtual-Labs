@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .user{
+                font-size: 8rem;
+                color: white;
+                padding-left: 60px;
+                margin:0;
+                margin-bottom: 7px;
+            }
+            p{
+                font-family: "Lucida Console", "Courier New", monospace;
+                margin-top: 0;
+                font-size: 5rem;
+                margin: auto;
+            }
+            .banner{
+                height: 35rem;
+                margin-top: 0;
+                padding-top: 0;
+                margin-bottom: 0;
+                background-color: dodgerblue;
+                background-image: url("docker-logo.png");
+                background-repeat: no-repeat;
+                background-position:50em;
+            }
+            body,html{
+                margin: 0;
+                padding: 0;
+            }
+            button.mytable{
+                color:violet;
+            }
+            #mytable{
+                padding-top: 150px;
+            }
+            table, th, td {
+                border: 1px solid white;
+                margin: auto;
+                font-size: 3rem;
+                }
+            th, td {
+            background-color: #96D4D4;
+            }
+
+            #images{
+                background-image: url("container.png");
+                background-color: #00CAF8;
+                background-repeat: no-repeat;
+                background-position: right;
+                width: 100%;
+                margin-top: 0;
+                height: 600px;
+                display: -webkit-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+                display: -ms-flexbox;  /* TWEENER - IE 10 */
+                display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+                display: flex;         /* NEW, Spec - Firefox, Chrome, Opera */
+                
+                justify-content: center;
+                align-items: center;
+            }
+            #buttonLink {
+                font-family: "Lucida Console", "Courier New", monospace;
+                position: relative;;
+                border-radius: 12px;
+                font-size: 3rem;
+                margin-left: 17px;
+                margin-top: 17px;
+                background-color: rgb(15, 29, 160);
+                color: white;
+                padding: 15px 25px;
+                text-decoration: none;
+            }   
+
+        </style>
+    </head>
+    <body onload="getData()">
+        <div class="banner">
+            <p style="font-size:8rem;margin:0;padding-top:120px;color:whitesmoke;padding-left:60px;">Welcome,</p>
+            <p class="user"></p>
+            <a id="buttonLink" href="">Create new Image</a>
+        </div>    
+       
+        <div id="images">
+            <p>You dont have any images, create One</p>
+        </div>
+    </body>
+    <script>
+        let searchParams = new URLSearchParams(window.location.search);
+        let name = "";
+        
+        if(searchParams.has("usr"))name = searchParams.get("usr");
+        else window.location = "login.html";
+        let pwd = searchParams.get("pwd");
+        document.getElementsByClassName("user")[0].innerHTML = name;
+        document.getElementById("buttonLink").href="newImageForm.html?name="+name+"&pwd="+pwd;
+        var data;
+        function deleteimg(img){
+
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText)
+                    alert("Image deleted successfully..");
+                    else 
+                    alert("Error occured..");
+                }
+            };
+            xmlhttp.open("GET", "\\ITOM\\AJAX\\deleteImage.php?&img="+img, true);
+            xmlhttp.send();
+            getData();
+            displayData();
+        }
+        function run(img){
+            var xmlhttp = new XMLHttpRequest();
+            document.body.style.backgroundImage="url('loading.gif')";
+            document.body.style.backgroundRepeat="no-repeat";
+            document.body.style.backgroundColor="black";
+            document.body.style.backgroundSize="cover";
+            document.body.innerHTML="";
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var port = JSON.parse(this.response);
+                    window.location = "runningShell.html?port="+port[0]+"&sftport="+port[1]+"&name="+img+"&pwd="+pwd;
+                }
+            };
+            xmlhttp.open("GET", "\\ITOM\\AJAX\\runImage.php?&img="+img+"&pwd="+pwd, true);
+            xmlhttp.send();
+        }
+        function displayData(){
+            
+            if(data.length){
+            var htmlCode="<div id='mytable'><table><tr><th>Images</th><th>Controls</th></tr>";
+            for(var i in data){
+                htmlCode+="<tr><td>"+data[i]["image"]+"</td><td> <button onclick=run('"+data[i]["image"]+"')>Run</button><button onclick=deleteimg('"+data[i]["image"]+"')>Delete</button></td></tr>";
+            }
+            htmlCode+="</table></div>";
+            document.getElementById("images").innerHTML=htmlCode;
+        }
+        }
+        function getData(){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    data = JSON.parse(this.responseText);
+                    displayData();
+                }
+                };
+                xmlhttp.open("GET", "\\ITOM\\AJAX\\getImages.php?usr="+name, true);
+                xmlhttp.send();
+            
+        }
+        
+    </script>
+</html>
